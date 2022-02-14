@@ -23,7 +23,8 @@ public:
     image_sub_ = it_.subscribe("/usb_cam/image_raw", 1,
       &ImageConverter::imageCb, this);
     image_pub_ = it_.advertise("/image_converter/output_video", 1);
-    P = = {656.4037475585938, 0.0, 329.7264464396903, 0.0, 0.0, 655.7791748046875, 261.0592521875151, 0.0, 0.0, 0.0, 1.0, 0.0};
+    sensor_msgs::CameraInfo msg = *(ros::topic::waitForMessage<sensor_msgs::CameraInfo>("/usb_cam/camera_info", nh_));
+    P = msg.P;
     cv::namedWindow(OPENCV_WINDOW);
   }
 
@@ -67,7 +68,8 @@ public:
 
 private:
   float x_loc ,y_loc;
-  double P[12];
+  // double P[12] = {656.4037475585938, 0.0, 329.7264464396903, 0.0, 0.0, 655.7791748046875, 261.0592521875151, 0.0, 0.0, 0.0, 1.0, 0.0};
+  boost::array<double, 12> P;
   std::vector<float> x_arr;
   std::vector<float> y_arr;
 };
